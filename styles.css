@@ -284,12 +284,12 @@ body {
 
 /* Availability color styles */
 .avail-green {
-  color: #16a34a;   /* green-600 */
+  color: #16a34a;   
   font-weight: 600;
 }
 
 .avail-red {
-  color: #dc2626;   /* red-600 */
+  color: #dc2626;   
   font-weight: 600;
 }
 
