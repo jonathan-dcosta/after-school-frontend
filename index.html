@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>After School Classes</title>
+
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+  />
+
+  <!-- Vue 2 -->
+  <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
+</head>
+
+<body>
+<div id="app">
+  <div class="page-shell">
+
+    <!-- HEADER BAR -->
+    <header class="top-bar">
+      <h1 class="logo">{{ sitename }}</h1>
+
+      <button
+        class="cart-button"
+        @click="toggleCheckout"
+        :disabled="cart.length === 0">
+        {{ cartItemCount || 0 }} <span class="fas fa-shopping-cart"></span> Checkout
+      </button>
+    </header>
+
+    <!-- MAIN LAYOUT -->
+    <!-- IMPORTANT: add class when on checkout so the grid collapses to 1 column -->
+    <main class="main-layout" :class="{ 'checkout-layout': !showLessons }">
+
+      <!-- LEFT SIDEBAR: SEARCH + SORT -->
+      <aside class="sidebar" v-if="showLessons">
+        <section class="panel">
+          <h2>Search</h2>
+          <input
+            v-model="searchTerm"
+            placeholder="Search by subject or location">
+        </section>
+
+        <section class="panel">
+          <h2>Sort by</h2>
+
+          <div class="panel-group">
+            <p class="panel-label">Attribute</p>
+            <label><input type="radio" value="subject" v-model="sortBy"> Subject</label>
+            <label><input type="radio" value="location" v-model="sortBy"> Location</label>
+            <label><input type="radio" value="price" v-model="sortBy"> Price</label>
+            <label><input type="radio" value="spaces" v-model="sortBy"> Availability</label>
+          </div>
+
+          <div class="panel-group">
+            <p class="panel-label">Order</p>
+            <label><input type="radio" value="asc" v-model="sortOrder"> Ascending</label>
+            <label><input type="radio" value="desc" v-model="sortOrder"> Descending</label>
+          </div>
+        </section>
+      </aside>
+
+      <!-- RIGHT COLUMN: LESSONS OR CHECKOUT -->
+      <section class="content">
+
+        <!-- ======= LESSON LIST PAGE ======= -->
+        <section v-if="showLessons">
+          <div class="lessons-grid">
+            <article
+              v-for="lesson in sortedLessons"
+              :key="lesson._id"
+              class="lesson-card">
+
+              <!-- Image -->
+              <div class="lesson-image">
+                <img v-if="lesson.image" :src="lesson.image" :alt="lesson.subject">
+                <div v-else class="placeholder-img">
+                  <span class="fas fa-book"></span>
+                </div>
+              </div>
+
+              <!-- Info -->
+              <div class="lesson-info">
+                <h3 class="lesson-title">{{ lesson.subject }}</h3>
+                <p class="lesson-price">AED {{ lesson.price }}</p>
+
+                <p class="lesson-meta">
+                  <span class="fas fa-map-marker-alt"></span>
+                  Location: {{ lesson.location }}
+                </p>
+
+                <p class="lesson-meta">
+                  Spaces: <strong>{{ itemsLeft(lesson) }}</strong>
+                </p>
+              </div>
+
+              <!-- Footer -->
+              <div class="lesson-footer">
+                <button
+                  @click="addToCart(lesson)"
+                  :disabled="!canAddToCart(lesson)">
+                  Add to cart
+                </button>
+
+                <p
+                  class="availability"
+                  :class="{
+                    'avail-green': itemsLeft(lesson) >= 5,
+                    'avail-red': itemsLeft(lesson) < 5
+                  }"
+                >
+                  <span v-if="itemsLeft(lesson) === 0">All out</span>
+                  <span v-else-if="itemsLeft(lesson) < 5">Only {{ itemsLeft(lesson) }} left</span>
+                  <span v-else>Available</span>
+                </p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- ======= CHECKOUT PAGE ======= -->
+        <section v-else class="checkout-page">
+          <h2>Checkout</h2>
+
+          <div class="checkout-card">
+
+            <!-- Cart Items -->
+            <div class="checkout-cart-panel">
+              <h3>Your Cart Items</h3>
+
+              <div class="cart-table-header">
+                <span>Item</span>
+                <span>Price</span>
+              </div>
+
+              <div v-if="cartDetails.length === 0" class="empty-cart">
+                Your cart is empty.
+              </div>
+
+              <ul v-else class="checkout-cart-list">
+                <li v-for="(item, index) in cartDetails" :key="item._id + '-' + index">
+
+                  <div class="checkout-cart-thumb" v-if="item.image">
+                    <img :src="item.image" :alt="item.subject">
+                  </div>
+
+                  <div class="checkout-cart-item-main">
+                    <strong>{{ item.subject }}</strong>
+                    <span>Location: {{ item.location }}</span>
+                  </div>
+
+                  <div class="checkout-cart-item-right">
+                    <span>AED {{ item.price }}</span>
+                    <button @click="removeFromCart(index)">Remove</button>
+                  </div>
+                </li>
+              </ul>
+
+              <p v-if="cartDetails.length > 0" class="checkout-total">
+                Total:
+                <strong>
+                  AED {{ cartDetails.reduce((sum, l) => sum + l.price, 0).toFixed(2) }}
+                </strong>
+              </p>
+            </div>
+
+            <!-- Checkout Form -->
+            <div class="checkout-form-panel">
+              <form @submit.prevent="submitForm">
+                <div class="form-row">
+                  <label>First Name * <input v-model.trim="order.firstName" required></label>
+                </div>
+
+                <div class="form-row">
+                  <label>Last Name * <input v-model.trim="order.lastName" required></label>
+                </div>
+
+                <div class="form-row">
+                  <label>Address * <input v-model.trim="order.address" required></label>
+                </div>
+
+                <div class="form-row">
+                  <label>City / Emirate *
+                    <select v-model="order.city" required>
+                      <option value="">Select Emirate</option>
+                      <option>Abu Dhabi</option>
+                      <option>Dubai</option>
+                      <option>Sharjah</option>
+                      <option>Ajman</option>
+                      <option>Umm Al Quwain</option>
+                      <option>Ras Al Khaimah</option>
+                      <option>Fujairah</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="form-row checkbox-row">
+                  <label><input type="checkbox" v-model="order.gift"> This is a gift</label>
+                </div>
+
+                <div class="form-row">
+                  <span class="form-label">Delivery Method *</span>
+                  <label class="inline-radio">
+                    <input type="radio" value="Home" v-model="order.method" required> Home
+                  </label>
+                  <label class="inline-radio">
+                    <input type="radio" value="Business" v-model="order.method"> Business
+                  </label>
+                </div>
+
+                <div class="form-row">
+                  <label>Phone Number * <input v-model.trim="order.phone" required></label>
+                </div>
+
+                <div class="form-buttons">
+                  <button type="submit" :disabled="!isCheckoutValid">Place Order</button>
+                  <button type="button" class="secondary-btn" @click="toggleCheckout">
+                    Continue Shopping
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="checkout-summary-panel">
+              <h3>Order Summary</h3>
+              <p>First Name: {{ order.firstName }}</p>
+              <p>Last Name: {{ order.lastName }}</p>
+              <p>Address: {{ order.address }}</p>
+              <p>City / Emirate: {{ order.city }}</p>
+              <p>Delivery Method: {{ order.method }}</p>
+              <p>Gift: {{ order.gift ? 'Yes' : 'No' }}</p>
+              <p>Phone: {{ order.phone }}</p>
+              <p>Items in cart: {{ cartItemCount || 0 }}</p>
+            </div>
+
+          </div><!-- /.checkout-card -->
+        </section>
+
+      </section><!-- /.content -->
+
+    </main><!-- /.main-layout -->
+
+  </div><!-- /.page-shell -->
+</div><!-- /#app -->
+
+<script src="main.js"></script>
+</body>
+</html>
