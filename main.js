@@ -92,13 +92,10 @@ let webstore = new Vue({
     }
   },
 
-  // Filtering on the frontend (Approach 1 for search)
-
+  // === IMAGE HELPER ===
     methods: {
-    // === IMAGE HELPER ===
       imageUrl(path) {
         if (!path) return "";
-    // If it's already a full URL, just return it
         if (path.startsWith("http://") || path.startsWith("https://")) {
           return path;
         }
