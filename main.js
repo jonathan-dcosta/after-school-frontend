@@ -10,7 +10,6 @@ new Vue({
 
   data: {
     sitename: "After-School Lessons",
-
     lessons: [],
     cart: [],
     searchTerm: "",
