@@ -201,7 +201,7 @@ body {
 .lesson-image {
   height: 140px;
   position: relative;
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  background: linear-gradient(135deg, #ffffff, #ffffff);
   display: flex;
   align-items: center;
   justify-content: center;
