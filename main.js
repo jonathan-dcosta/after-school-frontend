@@ -1,3 +1,6 @@
+// TODO: When backend is deployed to Render, replace localhost URLs with a constant like:
+// const API_BASE_URL = "https://after-school-backend.onrender.com";
+// and use `${API_BASE_URL}/collection/lesson` etc. in fetch calls.
 let webstore = new Vue({
   el: '#app',
 
