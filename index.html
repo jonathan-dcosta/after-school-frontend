@@ -172,15 +172,21 @@
             <div class="checkout-form-panel">
               <form @submit.prevent="submitForm">
                 <div class="form-row">
-                  <label>First Name * <input v-model.trim="order.firstName" required></label>
+                  <label>First Name * 
+                    <input v-model.trim="order.firstName" placeholder="Enter your first name" required>
+                  </label>
                 </div>
 
                 <div class="form-row">
-                  <label>Last Name * <input v-model.trim="order.lastName" required></label>
+                  <label>Last Name * 
+                    <input v-model.trim="order.lastName" placeholder="Enter your last name" required>
+                  </label>
                 </div>
 
                 <div class="form-row">
-                  <label>Address * <input v-model.trim="order.address" required></label>
+                  <label>Address * 
+                    <input v-model.trim="order.address" placeholder="Building, Street, Area" required>
+                  </label>
                 </div>
 
                 <div class="form-row">
