@@ -94,20 +94,20 @@ let webstore = new Vue({
 
   // Filtering on the frontend (Approach 1 for search)
 
-  methods: {
+    methods: {
     // === IMAGE HELPER ===
-    imageUrl(path) {
-      if (!path) return "";
+      imageUrl(path) {
+        if (!path) return "";
     // If it's already a full URL, just return it
-      if (path.startsWith("http://") || path.startsWith("https://")) {
-        return path;
-      }
+        if (path.startsWith("http://") || path.startsWith("https://")) {
+          return path;
+        }
     // If it starts with "/", append after the backend base
-      if (path.startsWith("/")) {
-        return API_BASE_URL + path;
-      }
+        if (path.startsWith("/")) {
+          return API_BASE_URL + path;
+        }
     // Otherwise, add a "/" in between
-      return "${API_BASE_URL}/${path}";
+        return "${API_BASE_URL}/${path}";
     },
     
     // === FETCH FUNCTIONS ===
