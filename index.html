@@ -114,8 +114,8 @@
                     'avail-red': itemsLeft(lesson) < 5
                   }"
                 >
-                  <span v-if="itemsLeft(lesson) === 0">All out</span>
-                  <span v-else-if="itemsLeft(lesson) < 5">Only {{ itemsLeft(lesson) }} left</span>
+                  <span v-if="itemsLeft(lesson) === 0">All out !</span>
+                  <span v-else-if="itemsLeft(lesson) < 5">Only {{ itemsLeft(lesson) }} left !</span>
                   <span v-else>Available</span>
                 </p>
               </div>
