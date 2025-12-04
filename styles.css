@@ -170,9 +170,9 @@ body {
   width: auto;
 }
 
-/* =========================
-   LESSON GRID (Home Page)
-========================= */
+                              /* =========================
+                                        HOME PAGE
+                                ========================= */
 .content {
   min-height: 300px;
 }
@@ -293,9 +293,9 @@ body {
   font-weight: 600;
 }
 
-/* =========================
-   CHECKOUT PAGE – CENTERED, SINGLE COLUMN
-========================= */
+                          /* =========================
+                                    CHECKOUT PAGE 
+                            ========================= */
 
 /* Wrap for the checkout area */
 .checkout-page {
