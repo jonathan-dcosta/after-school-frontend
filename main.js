@@ -92,7 +92,7 @@ let webstore = new Vue({
     }
   },
 
-  // We are doing filtering on the frontend now (Approach 1 for search)
+  // Filtering on the frontend (Approach 1 for search)
 
   methods: {
     // === FETCH FUNCTIONS ===
