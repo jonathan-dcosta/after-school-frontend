@@ -591,6 +591,13 @@ button[type="submit"]:not(:disabled):hover {
   font-size: 14px;
 }
 
+.site-footer {
+  margin-top: 20px;
+  font-size: 13px;
+  color: #6b7280;
+  text-align: center;
+}
+
 /* ---------- RESPONSIVE TWEAKS ---------- */
 
 @media (max-width: 900px) {
