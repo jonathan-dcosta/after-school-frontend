@@ -77,9 +77,10 @@
 
               <!-- Image -->
               <div class="lesson-image">
-                <img 
-                  v-if="lesson.image" 
-                  :src="imageUrl(lesson.image)" 
+                <!-- CHANGED: use imageUrl(lesson.image) -->
+                <img
+                  v-if="lesson.image"
+                  :src="imageUrl(lesson.image)"
                   :alt="lesson.subject"
                 >
                 <div v-else class="placeholder-img">
@@ -109,8 +110,8 @@
                   :disabled="!canAddToCart(lesson)">
                   Add to cart
                 </button>
-                
-<!-- Availability text with green for 'Available' and red when spaces < 5 -->
+
+                <!-- Availability text with green for 'Available' and red when spaces < 5 -->
                 <p
                   class="availability"
                   :class="{
@@ -149,6 +150,7 @@
               <ul v-else class="checkout-cart-list">
                 <li v-for="(item, index) in cartDetails" :key="item._id + '-' + index">
 
+                  <!-- CHANGED: use imageUrl(item.image) -->
                   <div class="checkout-cart-thumb" v-if="item.image">
                     <img :src="imageUrl(item.image)" :alt="item.subject">
                   </div>
@@ -177,19 +179,19 @@
             <div class="checkout-form-panel">
               <form @submit.prevent="submitForm">
                 <div class="form-row">
-                  <label>First Name * 
+                  <label>First Name *
                     <input v-model.trim="order.firstName" placeholder="Enter your first name" required>
                   </label>
                 </div>
 
                 <div class="form-row">
-                  <label>Last Name * 
+                  <label>Last Name *
                     <input v-model.trim="order.lastName" placeholder="Enter your last name" required>
                   </label>
                 </div>
 
                 <div class="form-row">
-                  <label>Address * 
+                  <label>Address *
                     <input v-model.trim="order.address" placeholder="Building, Street, Area" required>
                   </label>
                 </div>
@@ -224,7 +226,7 @@
                 </div>
 
                 <div class="form-row">
-                  <label>Phone Number * 
+                  <label>Phone Number *
                     <input v-model.trim="order.phone" placeholder="05xxxxxxxx">
                   </label>
                 </div>
@@ -259,9 +261,10 @@
     </main><!-- /.main-layout -->
 
   </div><!-- /.page-shell -->
-<footer class="site-footer">
-  © 2025 After-School Lessons
-</footer>
+
+  <footer class="site-footer">
+    © 2025 After-School Lessons
+  </footer>
 </div><!-- /#app -->
 
 <script src="main.js"></script>
