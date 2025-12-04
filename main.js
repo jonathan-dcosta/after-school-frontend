@@ -100,7 +100,7 @@ let webstore = new Vue({
 // Fetch all lessons from the backend (Express + MongoDB)
 // Currently uses localhost:3000; will be switched to Render later.
     fetchLessons() {
-      fetch('${API_BASE_URL}/collection/lesson')
+      fetch(`${API_BASE_URL}/collection/lesson`)
         .then(response => response.json())
         .then(data => {
           this.lessons = data;
@@ -138,7 +138,7 @@ let webstore = new Vue({
         spaces
       };
 
-      fetch('${API_BASE_URL}/collection/order', {
+      fetch(`${API_BASE_URL}/collection/order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderToSend)
@@ -162,7 +162,7 @@ let webstore = new Vue({
         if (count) {
           const newSpaces = lesson.spaces - count;
           promises.push(
-            fetch('${API_BASE_URL}/collection/lesson/${lesson._id}', {
+            fetch(`${API_BASE_URL}/collection/lesson/${lesson._id}`, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ spaces: newSpaces })
