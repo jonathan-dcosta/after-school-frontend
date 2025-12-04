@@ -577,7 +577,7 @@ button[type="submit"]:not(:disabled):hover {
   transform: translateY(-1px);
 }
 
-/* ---------- SUMMARY PANEL ---------- */
+                          /* ---------- SUMMARY PANEL ---------- */
 
 .checkout-summary-panel h3 {
   margin-top: 0;
