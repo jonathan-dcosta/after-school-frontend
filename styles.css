@@ -76,9 +76,9 @@ body {
   background: #15803d;
 }
 
-/* =========================
-   MAIN LAYOUT (Lessons + Sidebar)
-========================= */
+                                /* =========================
+                                MAIN LAYOUT (Lessons + Sidebar)
+                                  ========================= */
 .main-layout {
   display: grid;
   grid-template-columns: 260px minmax(0, 1fr);
