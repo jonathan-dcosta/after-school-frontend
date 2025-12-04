@@ -598,7 +598,7 @@ button[type="submit"]:not(:disabled):hover {
   text-align: center;
 }
 
-/* ---------- RESPONSIVE TWEAKS ---------- */
+                          /* ---------- RESPONSIVE TWEAKS ---------- */
 
 @media (max-width: 900px) {
   .main-layout,
