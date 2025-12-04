@@ -100,7 +100,7 @@ let webstore = new Vue({
       if (!path) return "";
     // If it's already a full URL, just return it
       if (path.startsWith("http://") || path.startsWith("https://")) {
-      return path;
+        return path;
       }
     // If it starts with "/", append after the backend base
       if (path.startsWith("/")) {
@@ -108,8 +108,8 @@ let webstore = new Vue({
       }
     // Otherwise, add a "/" in between
       return `${API_BASE_URL}/${path}`;
-  },
-
+    },
+    
     // === FETCH FUNCTIONS ===
 
 // Fetch all lessons from the backend (Express + MongoDB)
