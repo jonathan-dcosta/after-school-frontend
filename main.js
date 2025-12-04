@@ -105,7 +105,7 @@ let webstore = new Vue({
         }
     // Otherwise, add a "/" in between
         return "${API_BASE_URL}/${path}";
-    },
+      },
     
     // === FETCH FUNCTIONS ===
 
