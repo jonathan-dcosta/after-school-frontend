@@ -348,7 +348,7 @@ body {
   border: 1px solid #bbf7d0;
 }
 
-/* ---------- CART SECTION ---------- */
+                          /* ---------- CART SECTION ---------- */
 
 .checkout-cart-panel h3 {
   margin: 0 0 12px;
@@ -444,7 +444,7 @@ body {
   font-weight: 600;
 }
 
-/* ---------- FORM SECTION ---------- */
+                              /* ---------- FORM SECTION ---------- */
 
 .checkout-form-panel form {
   width: 100%;
