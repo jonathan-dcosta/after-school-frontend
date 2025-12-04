@@ -91,9 +91,9 @@ body {
   grid-template-columns: minmax(0, 1fr);
 }
 
-/* =========================
-   SIDEBAR (SEARCH + SORT)
-========================= */
+                                  /* =========================
+                                      SIDEBAR (SEARCH + SORT)
+                                    ========================= */
 .sidebar {
   display: flex;
   flex-direction: column;
