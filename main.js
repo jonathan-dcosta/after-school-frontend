@@ -96,7 +96,9 @@ let webstore = new Vue({
 
   methods: {
     // === FETCH FUNCTIONS ===
-
+    
+// Fetch all lessons from the backend (Express + MongoDB)
+// Currently uses localhost:3000; will be switched to Render later.
     fetchLessons() {
       fetch('http://localhost:3000/collection/lesson')
         .then(response => response.json())
