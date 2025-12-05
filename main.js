@@ -100,12 +100,21 @@ let webstore = new Vue({
       if (path.startsWith("http://") || path.startsWith("https://")) {
         return path;
       }
-      // If it starts with "/", append after the backend base
-      if (path.startsWith("/")) {
-        return API_BASE_URL + path;
+    // Normalising whatever is stored in MongoDB:
+    // e.g. "Acting_Classes.png" OR "/images/Acting_Classes.png"
+      let clean = path.trim();
+
+      // Remove leading slash if present
+      if (clean.startsWith("/")) {
+        clean = clean.slice(1);
       }
-      // Otherwise, add a "/" in between
-      return `${API_BASE_URL}/${path}`;
+
+      // If it doesn't already start with "images/", add it
+      if (!clean.toLowerCase().startsWith("images/")) {
+        clean = "images/" + clean;
+      }
+
+      return `${API_BASE_URL}/${clean}`;
     },
 
     // === FETCH FUNCTIONS ===
