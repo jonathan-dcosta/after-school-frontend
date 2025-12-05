@@ -104,12 +104,10 @@ let webstore = new Vue({
       if (path.startsWith("http://") || path.startsWith("https://")) {
         return path;
       }
-
-      let cleanPath = path;
-
       // If it doesn't already start with images/, prepend it
-      if (!cleanPath.startsWith("images/") && !cleanPath.startsWith("/images/")) {
-        cleanPath = "images/" + cleanPath.replace(/^\/+/, "");
+      let cleanPath = path;
+      if (!cleanPath.includes("images/")) {
+        cleanPath = "images/" + cleanPath;
       }
 
       // Ensure we don't end up with double slashes
@@ -117,7 +115,7 @@ let webstore = new Vue({
         cleanPath = cleanPath.substring(1);
       }
 
-      return `${API_BASE_URL}/${cleanPath}`;
+      return '${API_BASE_URL}/${cleanPath}';
     },
 
     // === FETCH FUNCTIONS ===
