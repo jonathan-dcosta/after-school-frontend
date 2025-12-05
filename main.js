@@ -1,4 +1,4 @@
-// Backend API base URL (Render)
+// Backend API base URL (Render) - MAKE SURE THIS MATCHES YOUR DEPLOYED URL
 const API_BASE_URL = "https://after-school-backend-fycn.onrender.com";
 
 let webstore = new Vue({
@@ -6,15 +6,12 @@ let webstore = new Vue({
 
   data: {
     sitename: "After-School Lessons",
-
     lessons: [],
     cart: [],
     showLessons: true,
-
     searchTerm: "",
     sortBy: "subject",
     sortOrder: "asc",
-
     order: {
       firstName: "",
       lastName: "",
@@ -24,7 +21,6 @@ let webstore = new Vue({
       method: "Home",
       phone: ""
     },
-
     orderMessage: ""
   },
 
@@ -37,12 +33,6 @@ let webstore = new Vue({
       return this.cart.length || "";
     },
 
-    // All fields mandatory:
-    // - cart not empty
-    // - first & last name: letters only
-    // - address not empty
-    // - city/emirate selected
-    // - phone numbers only
     isCheckoutValid() {
       const nameRegex = /^[A-Za-z\s]+$/;
       const phoneRegex = /^[0-9]+$/;
@@ -93,41 +83,44 @@ let webstore = new Vue({
   },
 
   methods: {
-    // === IMAGE HELPER ===
-    // Takes whatever is stored in lesson.image and turns it into a full URL
-    // using the backend base. Works for "/images/Acting_Classes.png"
-    // or "images/Acting_Classes.png" or just "Acting_Classes.png".
-    imageUrl(path) {
-      if (!path) return "";
-
-      // Already a full URL? Just return it.
-      if (path.startsWith("http://") || path.startsWith("https://")) {
-        return path;
+    // === IMAGE HELPER - FIXED VERSION ===
+    imageUrl(imagePath) {
+      if (!imagePath) return "";
+      
+      // If already a full URL, return as is
+      if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+        return imagePath;
       }
-      // If it doesn't already start with images/, prepend it
-      let cleanPath = path;
-      if (!cleanPath.includes("images/")) {
+      
+      // Remove leading slash if present
+      let cleanPath = imagePath.startsWith("/") ? imagePath.substring(1) : imagePath;
+      
+      // Ensure path starts with 'images/'
+      if (!cleanPath.startsWith("images/")) {
         cleanPath = "images/" + cleanPath;
       }
-
-      // Ensure we don't end up with double slashes
-      if (cleanPath.startsWith("/")) {
-        cleanPath = cleanPath.substring(1);
-      }
-
-      return '${API_BASE_URL}/${cleanPath}';
+      
+      // Return full URL with API base
+      return `${API_BASE_URL}/${cleanPath}`;
     },
 
     // === FETCH FUNCTIONS ===
-
-    // Fetch all lessons from the backend (Express + MongoDB)
     fetchLessons() {
-      fetch('${API_BASE_URL}/collection/lesson')
-        .then(response => response.json())
+      fetch(`${API_BASE_URL}/collection/lesson`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then(data => {
+          console.log("Lessons loaded:", data);
           this.lessons = data;
         })
-        .catch(err => console.error("Error loading lessons:", err));
+        .catch(err => {
+          console.error("Error loading lessons:", err);
+          alert("Failed to load lessons. Please check your internet connection and try again.");
+        });
     },
 
     submitForm() {
@@ -141,7 +134,6 @@ let webstore = new Vue({
         return;
       }
 
-      // build lessonCounts: how many times each lesson is in the cart
       const lessonCounts = {};
       this.cart.forEach(id => {
         lessonCounts[id] = (lessonCounts[id] || 0) + 1;
@@ -160,19 +152,23 @@ let webstore = new Vue({
         spaces
       };
 
-      fetch('${API_BASE_URL}/collection/order', {
+      fetch(`${API_BASE_URL}/collection/order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderToSend)
       })
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          return res.json();
+        })
         .then(() => {
-          // After order is saved, update spaces in DB
           this.updateSpacesOnServer(lessonCounts);
         })
         .catch(err => {
           console.error("Order error:", err);
-          alert("There was a problem submitting your order.");
+          alert("There was a problem submitting your order. Please try again.");
         });
     },
 
@@ -184,7 +180,7 @@ let webstore = new Vue({
         if (count) {
           const newSpaces = lesson.spaces - count;
           promises.push(
-            fetch('${API_BASE_URL}/collection/lesson/${lesson._id}', {
+            fetch(`${API_BASE_URL}/collection/lesson/${lesson._id}`, {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ spaces: newSpaces })
@@ -195,8 +191,7 @@ let webstore = new Vue({
 
       Promise.all(promises)
         .then(() => {
-          alert("Order submitted!");
-          // Reset form and cart
+          alert("Order submitted successfully!");
           this.cart = [];
           this.order.firstName = "";
           this.order.lastName = "";
@@ -206,15 +201,15 @@ let webstore = new Vue({
           this.order.gift = false;
           this.order.method = "Home";
           this.showLessons = true;
-          this.fetchLessons(); // reload updated spaces
+          this.fetchLessons();
         })
         .catch(err => {
           console.error("Error updating spaces:", err);
+          alert("Order was placed but there was an issue updating inventory.");
         });
     },
 
     // === CART LOGIC ===
-
     cartCount(lessonId) {
       return this.cart.filter(id => id === lessonId).length;
     },
