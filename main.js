@@ -2,30 +2,30 @@
 const API_BASE_URL = "https://after-school-backend-fycn.onrender.com";
 
 let webstore = new Vue({
-  el: '#app',
+  el: "#app",
 
   data: {
-    sitename: 'After-School Lessons',
+    sitename: "After-School Lessons",
 
     lessons: [],
     cart: [],
     showLessons: true,
 
-    searchTerm: '',
-    sortBy: 'subject',
-    sortOrder: 'asc',
+    searchTerm: "",
+    sortBy: "subject",
+    sortOrder: "asc",
 
     order: {
-      firstName: '',
-      lastName: '',
-      address: '',
-      city: '',
+      firstName: "",
+      lastName: "",
+      address: "",
+      city: "",
       gift: false,
-      method: 'Home',
-      phone: ''
+      method: "Home",
+      phone: ""
     },
 
-    orderMessage: ''
+    orderMessage: ""
   },
 
   created() {
@@ -34,7 +34,7 @@ let webstore = new Vue({
 
   computed: {
     cartItemCount() {
-      return this.cart.length || '';
+      return this.cart.length || "";
     },
 
     // All fields mandatory:
@@ -51,15 +51,15 @@ let webstore = new Vue({
         this.cart.length > 0 &&
         nameRegex.test(this.order.firstName) &&
         nameRegex.test(this.order.lastName) &&
-        this.order.address.trim() !== '' &&
-        this.order.city.trim() !== '' &&
+        this.order.address.trim() !== "" &&
+        this.order.city.trim() !== "" &&
         phoneRegex.test(this.order.phone)
       );
     },
 
     cartDetails() {
       return this.cart
-        .map(id => this.lessons.find(lesson => lesson._id === id))
+        .map((id) => this.lessons.find((lesson) => lesson._id === id))
         .filter(Boolean);
     },
 
@@ -67,9 +67,10 @@ let webstore = new Vue({
       if (!this.searchTerm) return this.lessons;
       const term = this.searchTerm.toLowerCase();
 
-      return this.lessons.filter(lesson =>
-        lesson.subject.toLowerCase().includes(term) ||
-        lesson.location.toLowerCase().includes(term)
+      return this.lessons.filter(
+        (lesson) =>
+          lesson.subject.toLowerCase().includes(term) ||
+          lesson.location.toLowerCase().includes(term)
       );
     },
 
@@ -79,66 +80,65 @@ let webstore = new Vue({
         let fa = a[this.sortBy];
         let fb = b[this.sortBy];
 
-        if (typeof fa === 'string') {
+        if (typeof fa === "string") {
           fa = fa.toLowerCase();
           fb = fb.toLowerCase();
         }
 
-        if (fa < fb) return this.sortOrder === 'asc' ? -1 : 1;
-        if (fa > fb) return this.sortOrder === 'asc' ? 1 : -1;
+        if (fa < fb) return this.sortOrder === "asc" ? -1 : 1;
+        if (fa > fb) return this.sortOrder === "asc" ? 1 : -1;
         return 0;
       });
       return lessons;
     }
   },
 
-  // === IMAGE HELPER ===
-    methods: {
-      imageUrl(path) {
-        if (!path) return "";
-        if (path.startsWith("http://") || path.startsWith("https://")) {
-          return path;
-        }
-    // If it starts with "/", append after the backend base
-        if (path.startsWith("/")) {
-          return API_BASE_URL + path;
-        }
-    // Otherwise, add a "/" in between
-        return "${API_BASE_URL}/${path}";
+  methods: {
+    // === IMAGE HELPER ===
+    imageUrl(path) {
+      if (!path) return "";
+      if (path.startsWith("http://") || path.startsWith("https://")) {
+        return path;
+      }
+      // If it starts with "/", append after the backend base
+      if (path.startsWith("/")) {
+        return API_BASE_URL + path;
+      }
+      // Otherwise, add a "/" in between
+      return `${API_BASE_URL}/${path}`;
     },
-    
+
     // === FETCH FUNCTIONS ===
 
-// Fetch all lessons from the backend (Express + MongoDB)
-// Currently uses localhost:3000; will be switched to Render later.
+    // Fetch all lessons from the backend (Express + MongoDB)
     fetchLessons() {
-      fetch('${API_BASE_URL}/collection/lesson')
-        .then(response => response.json())
-        .then(data => {
+      fetch(`${API_BASE_URL}/lessons`)
+        .then((response) => response.json())
+        .then((data) => {
           this.lessons = data;
         })
-        .catch(err => console.error('Error loading lessons:', err));
+        .catch((err) => console.error("Error loading lessons:", err));
     },
 
     submitForm() {
       if (!this.isCheckoutValid) {
         alert(
-          'Please fill in all fields.\n' +
-          '- First & Last Name: letters only\n' +
-          '- Phone: numbers only\n' +
-          '- Address and City/Emirate must not be empty.'
+          "Please fill in all fields.\n" +
+            "- First & Last Name: letters only\n" +
+            "- Phone: numbers only\n" +
+            "- Address and City/Emirate must not be empty."
         );
         return;
       }
 
       // build lessonCounts: how many times each lesson is in the cart
       const lessonCounts = {};
-      this.cart.forEach(id => {
+      this.cart.forEach((id) => {
         lessonCounts[id] = (lessonCounts[id] || 0) + 1;
       });
 
       const lessonIDs = Object.keys(lessonCounts);
-      const spaces = lessonIDs.map(id => ({
+      const spaces = lessonIDs.map((id) => ({
         lessonId: id,
         spaces: lessonCounts[id]
       }));
@@ -150,33 +150,33 @@ let webstore = new Vue({
         spaces
       };
 
-      fetch('${API_BASE_URL}/collection/order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      fetch(`${API_BASE_URL}/orders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderToSend)
       })
-        .then(res => res.json())
+        .then((res) => res.json())
         .then(() => {
           // After order is saved, update spaces in DB
           this.updateSpacesOnServer(lessonCounts);
         })
-        .catch(err => {
-          console.error('Order error:', err);
-          alert('There was a problem submitting your order.');
+        .catch((err) => {
+          console.error("Order error:", err);
+          alert("There was a problem submitting your order.");
         });
     },
 
     updateSpacesOnServer(lessonCounts) {
       const promises = [];
 
-      this.lessons.forEach(lesson => {
+      this.lessons.forEach((lesson) => {
         const count = lessonCounts[lesson._id];
         if (count) {
           const newSpaces = lesson.spaces - count;
           promises.push(
-            fetch('${API_BASE_URL}/collection/lesson/${lesson._id}', {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
+            fetch(`${API_BASE_URL}/lessons/${lesson._id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ spaces: newSpaces })
             })
           );
@@ -185,28 +185,28 @@ let webstore = new Vue({
 
       Promise.all(promises)
         .then(() => {
-          alert('Order submitted!');
+          alert("Order submitted!");
           // Reset form and cart
           this.cart = [];
-          this.order.firstName = '';
-          this.order.lastName = '';
-          this.order.address = '';
-          this.order.city = '';
-          this.order.phone = '';
+          this.order.firstName = "";
+          this.order.lastName = "";
+          this.order.address = "";
+          this.order.city = "";
+          this.order.phone = "";
           this.order.gift = false;
-          this.order.method = 'Home';
+          this.order.method = "Home";
           this.showLessons = true;
           this.fetchLessons(); // reload updated spaces
         })
-        .catch(err => {
-          console.error('Error updating spaces:', err);
+        .catch((err) => {
+          console.error("Error updating spaces:", err);
         });
     },
 
     // === CART LOGIC ===
 
     cartCount(lessonId) {
-      return this.cart.filter(id => id === lessonId).length;
+      return this.cart.filter((id) => id === lessonId).length;
     },
 
     itemsLeft(lesson) {
