@@ -150,7 +150,7 @@
                 <li v-for="(item, index) in cartDetails" :key="item._id + '-' + index">
 
                   <div class="checkout-cart-thumb" v-if="item.image">
-                    <img :src="imageUrl(item.image)" :src="imageUrl(item.image)" :alt="item.subject">
+                    <img :src="imageUrl(item.image)" :alt="item.subject">
                   </div>
 
                   <div class="checkout-cart-item-main">
